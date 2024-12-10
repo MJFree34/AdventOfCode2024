@@ -37,7 +37,7 @@ def calculate_similarity_score(list1, list2):
 
 
 if __name__ == "__main__":
-    file_path = 'day1/input.txt'
+    file_path = '/Users/mattfree/Desktop/AdventOfCode/day1/input.txt'
     list1, list2 = parse_input(file_path)
     total_distance = calculate_total_distance(list1, list2)
     print("Total distance: ", total_distance)
