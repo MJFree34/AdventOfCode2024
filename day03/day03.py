@@ -28,7 +28,7 @@ def calculate_total_sum(memory):
     return total_sum
 
 if __name__ == "__main__":
-    file_path = '/Users/mattfree/Desktop/AdventOfCode/day3/input.txt'
+    file_path = '/Users/mattfree/Desktop/AdventOfCode/day03/input.txt'
     memory = parse_input(file_path)
     total_sum = calculate_total_sum(memory)
     print(total_sum)

@@ -100,7 +100,7 @@ def calculate_total_x_mas(char_2d_array):
     return total_x_mas
 
 if __name__ == "__main__":
-    input_file = '/Users/mattfree/Desktop/AdventOfCode/day4/input.txt'
+    input_file = '/Users/mattfree/Desktop/AdventOfCode/day04/input.txt'
     char_2d_array = read_input(input_file)
     total_xmas = calculate_total_xmas(char_2d_array)
     print(f"Total 'XMAS' found: {total_xmas}")

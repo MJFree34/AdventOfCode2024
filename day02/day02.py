@@ -26,7 +26,7 @@ def check_report(report):
     return False
 
 if __name__ == "__main__":
-    file_path = '/Users/mattfree/Desktop/AdventOfCode/day2/input.txt'
+    file_path = '/Users/mattfree/Desktop/AdventOfCode/day02/input.txt'
     reports = parse_input(file_path)
 
     safe_reports_count = 0
