@@ -17,8 +17,17 @@ def solve_part1(data):
     return total_tokens
 
 def solve_part2(data):
-    # Implement the solution for part 2
-    pass
+    total_tokens = 0
+    tolerance = 0.0001
+    for machine in data:
+        ax, ay, bx, by, x, y = map(int, re.findall(r'(\d+)', machine))
+        x += 10000000000000
+        y += 10000000000000
+        A = (bx * y - by * x) / (bx * ay - by * ax)
+        B = (x - ax * A) / bx
+        if abs(A - round(A)) < tolerance and abs(B - round(B)) < tolerance:
+            total_tokens += 3 * round(A) + round(B)
+    return total_tokens
 
 if __name__ == "__main__":
     input_file = '/Users/mattfree/Desktop/AdventOfCode/day13/input.txt'
