@@ -56,7 +56,28 @@ def solve_part1(grid):
     return top_left_count * top_right_count * bottom_left_count * bottom_right_count
 
 def solve_part2(grid):
-    pass
+    for sec in range(100000):
+        new_grid = [[[] for _ in range(dim_x)] for _ in range(dim_y)]
+        for r in range(dim_y):
+            for c in range(dim_x):
+                for vx, vy in grid[r][c]:
+                    new_r = (r + vy) % dim_y
+                    new_c = (c + vx) % dim_x
+                    new_grid[new_r][new_c].append((vx, vy))
+        grid = new_grid
+
+        print(f"Second: {sec+1}")
+        
+        has_overlap = False
+        for r in range(dim_y):
+            for c in range(dim_x):
+                if len(grid[r][c]) > 1:
+                    has_overlap = True
+                    break
+        
+        if not has_overlap:
+            print_grid(grid)
+            return sec + 1
 
 if __name__ == "__main__":
     input_file = '/Users/mattfree/Desktop/AdventOfCode/day14/input.txt'
