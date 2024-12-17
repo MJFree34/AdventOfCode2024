@@ -1,4 +1,6 @@
 import heapq
+from collections import defaultdict
+from collections.abc import Iterator
 
 def read_input(file_path):
     with open(file_path, 'r') as file:
@@ -20,54 +22,62 @@ def find_start_end(maze):
 def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-def a_star_search(maze, start, end):
+def dijkstras(maze, start, end):
     rows, cols = len(maze), len(maze[0])
     open_set = []
-    heapq.heappush(open_set, (0, start, 'R'))  # (f_score, position, direction)
-    came_from = {}
-    g_score = {start: 0}
-    f_score = {start: heuristic(start, end)}
+    heapq.heappush(open_set, (0, start, 'R'))  # (current_cost, position, direction)
+    g_score = {(start, 'R'): 0}
+    prev_states = defaultdict(set)
     
     while open_set:
-        current_f, current, current_dir = heapq.heappop(open_set)
+        current_cost, current, current_dir = heapq.heappop(open_set)
 
         if current == end:
-            path = []
-            while (current, current_dir) in came_from:
-                path.append(current)
-                current, current_dir = came_from[(current, current_dir)]
-            path.append(start)
-            path.reverse()
-            return path, current_f
-        
+            break
+
         for dr, dc, direction in [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]:
             neighbor = (current[0] + dr, current[1] + dc)
             if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols and maze[neighbor[0]][neighbor[1]] != '#':
                 move_cost = 1
                 if current_dir and direction != current_dir:
                     move_cost += 1000  # Cost for making a turn
-                tentative_g_score = g_score.get(current, float('inf')) + move_cost
-                if tentative_g_score < g_score.get(neighbor, float('inf')):
-                    came_from[neighbor] = (current, current_dir)
-                    g_score[neighbor] = tentative_g_score
-                    f_score[neighbor] = tentative_g_score + heuristic(neighbor, end)
-                    heapq.heappush(open_set, (f_score[neighbor], neighbor, direction))
+                tentative_g_score = g_score.get((current, current_dir), float('inf')) + move_cost
+                neighbor_state = (neighbor, direction)
+                prev_g_score = g_score.get(neighbor_state, float('inf'))
+                if tentative_g_score < prev_g_score:
+                    g_score[neighbor_state] = tentative_g_score
+                    heapq.heappush(open_set, (tentative_g_score, neighbor, direction))
+                    prev_states[neighbor_state].add((current, current_dir))
+                elif tentative_g_score == prev_g_score:
+                    prev_states[neighbor_state].add((current, current_dir))
+    
+    current_state = (current, current_dir)
 
-    return None, None
+    def walk(state) -> Iterator:
+        node, *_ = state
+        if node == start:
+            yield [state]
+            return
+        for prev_state in prev_states[state]:
+            for path in walk(prev_state):
+                yield path + [state]
+
+    return current_cost, walk(current_state)
 
 def solve_part1(maze):
     start, end = find_start_end(maze)
-    _, score = a_star_search(maze, start, end)
+    score, _ = dijkstras(maze, start, end)
     return score
 
 def solve_part2(maze):
-    pass
+    start, end = find_start_end(maze)
+    _, paths = dijkstras(maze, start, end)
+    return len({pos for path in paths for pos, _ in path})
 
 if __name__ == "__main__":
     input_data = read_input('/Users/mattfree/Desktop/AdventOfCode/day16/input.txt')
     
     maze = parse_input(input_data)
-    print(maze)
     
     result_part1 = solve_part1(maze)
     print(f"Part 1: {result_part1}")
