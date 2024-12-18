@@ -32,6 +32,8 @@ def bfs(grid: List[List[str]], start: Tuple[int, int], end: Tuple[int, int]) -> 
                 queue.append(((new_r, new_c), steps + 1))
                 visited.add((new_r, new_c))
 
+    return -1
+
 def solve_part1(coordinates: List[Tuple[int, int]]) -> int:
     grid = [['.'] * grid_size for _ in range(grid_size)]
 
@@ -41,8 +43,17 @@ def solve_part1(coordinates: List[Tuple[int, int]]) -> int:
     
     return bfs(grid, (0, 0), (grid_size - 1, grid_size - 1))
 
-def solve_part2(coordinates: List[Tuple[int, int]]) -> int:
-    pass
+def solve_part2(coordinates: List[Tuple[int, int]]) -> str:
+    grid = [['.'] * grid_size for _ in range(grid_size)]
+
+    for i, (x, y) in enumerate(coordinates):
+        grid[y][x] = '#'
+
+        min_distance = bfs(grid, (0, 0), (grid_size - 1, grid_size - 1))
+        if min_distance == -1:
+            break
+    
+    return f'{x},{y}'
 
 if __name__ == "__main__":
     input_data = read_input('/Users/mattfree/Desktop/AdventOfCode/day18/input.txt')
