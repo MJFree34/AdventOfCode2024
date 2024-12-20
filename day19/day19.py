@@ -14,18 +14,18 @@ def process_input(input_data: List[str]) -> Tuple[List[str], List[str]]:
     return towels, designs
 
 @cache
-def is_possible(design: str) -> bool:
+def is_possible(design: str, op) -> bool:
     if not design:
         return True
-    return any(is_possible(design[len(towel):]) 
+    return op(is_possible(design[len(towel):], op) 
               for towel in towels 
               if design.startswith(towel))
 
 def solve_part1() -> int:
-    return sum(is_possible(design) for design in designs)
+    return sum(is_possible(design, any) for design in designs)
 
 def solve_part2():
-    pass
+    return sum(is_possible(design, sum) for design in designs)
 
 if __name__ == "__main__":
     input_data = read_input('/Users/mattfree/Desktop/AdventOfCode/day19/input.txt')
