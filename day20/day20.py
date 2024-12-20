@@ -61,8 +61,32 @@ def solve_part1() -> int:
 
     return valid_cheats_count
 
+def test_longer_cheats(dist_map: Dict[Tuple[int, int], int]) -> Dict[Tuple[Tuple[int, int], Tuple[int, int]], int]:
+    cheats = {}
+    for r, c in dist_map:
+        for i in range(-20, 21):
+            for j in range(-20, 21):
+                if abs(i) + abs(j) > 20:
+                    continue
+                node_r, node_c = r + i, c + j
+                if (node_r, node_c) in dist_map:
+                    if dist_map[(r, c)] > dist_map[(node_r, node_c)] + abs(i) + abs(j):
+                        cheats[((r, c), (node_r, node_c))] = dist_map[(r, c)] - dist_map[(node_r, node_c)] - abs(i) - abs(j)
+    return cheats
+
 def solve_part2():
-    pass
+    start, _ = find_start_end(grid)
+    dist_map = bfs(start)
+    cheats = test_longer_cheats(dist_map)
+
+    valid_cheats_count = 0
+
+    for cheat in cheats:
+        length = cheats[cheat]
+        if length >= 100:
+            valid_cheats_count += 1
+
+    return valid_cheats_count
 
 if __name__ == "__main__":
     input_data = read_input('/Users/mattfree/Desktop/AdventOfCode/day20/input.txt')
