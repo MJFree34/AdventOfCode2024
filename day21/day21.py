@@ -59,7 +59,7 @@ def calculate_instrs(robot_id: int, curr_key: str, dest_key: str, total_robots: 
             steps += calculate_instrs(robot_id + 1, r[-1], 'A', total_robots)
             candidates.append(steps)
     return min(candidates)
-
+    
 def solve_part1() -> int:
     total_complexity = 0
     for password in passwords:
@@ -70,7 +70,13 @@ def solve_part1() -> int:
     return total_complexity
 
 def solve_part2():
-    pass
+    total_complexity = 0
+    for password in passwords:
+        complexity = calculate_instrs(0, 'A', password[0], 26)
+        for i in range(1, len(password)):
+            complexity += calculate_instrs(0, password[i-1], password[i], 26)
+        total_complexity += complexity * int(password[:-1])
+    return total_complexity
 
 if __name__ == "__main__":
     passwords = read_input('/Users/mattfree/Desktop/AdventOfCode/day21/input.txt')
