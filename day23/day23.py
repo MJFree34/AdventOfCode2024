@@ -1,3 +1,6 @@
+from networkx.algorithms.clique import find_cliques
+import networkx as nx
+
 graph: dict[str, set[str]] = {}
 
 def read_input(file_path: str) -> list[str]:
@@ -13,7 +16,7 @@ def process_input(input_data: list[str]):
         if v not in graph:
             graph[v] = set()
         graph[v].add(u)
-    print(graph)
+    # print(graph)
 
 def solve_part1() -> int:
     three_sets_count = 0
@@ -25,12 +28,18 @@ def solve_part1() -> int:
                 c = connected_nodes[j]
                 if c in graph[b] and (a.startswith('t') or b.startswith('t') or c.startswith('t')):
                     three_sets_count += 1
-                    print(a, b, c)
+                    # print(a, b, c)
         
     return three_sets_count // 3
 
-def solve_part2():
-    pass
+def solve_part2() -> str:
+    G = nx.Graph()
+    for node, neighbors in graph.items():
+        for neighbor in neighbors:
+            G.add_edge(node, neighbor)
+    cliques = list(find_cliques(G))
+    max_clique = sorted(max(cliques, key=len))
+    return ','.join(node for node in max_clique)
 
 if __name__ == "__main__":
     input_data = read_input('/Users/mattfree/Desktop/AdventOfCode/day23/input.txt')
