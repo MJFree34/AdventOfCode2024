@@ -7,7 +7,7 @@ def read_input(file_path: str) -> list[str]:
 def process_input(input_data: list[str]) -> str:
     return input_data[0]
 
-def solve_part1() -> int:
+def expand_disk(disk: str) -> list[str]:
     expanded_disk = []
     id_num = 0
     i = 0
@@ -21,6 +21,11 @@ def solve_part1() -> int:
             # Represents free space
             expanded_disk.extend(['.'] * int(disk[i]))
         i += 1
+
+    return expanded_disk
+
+def solve_part1() -> int:
+    expanded_disk = expand_disk(disk)
 
     free_space = expanded_disk.index('.')
     for i in reversed(range(len(expanded_disk))):
@@ -36,8 +41,30 @@ def solve_part1() -> int:
 
     return checksum
 
-def solve_part2():
-    pass
+def solve_part2() -> int:
+    expanded_disk = expand_disk(disk)
+
+    curr_id = max(int(char) for char in expanded_disk if char != '.')
+
+    # print("Start Disk:", ''.join(expanded_disk))
+
+    while curr_id >= 0:
+        id_count = expanded_disk.count(str(curr_id))
+        id_index = expanded_disk.index(str(curr_id))
+        
+        for i in range(id_index + 1):
+            if all(char == '.' for char in expanded_disk[i:i + id_count]):
+                for j in range(id_count):
+                    expanded_disk[i + j] = str(curr_id)
+                    expanded_disk[id_index + j] = '.'
+                break
+        # print("ID:", curr_id, "Disk:", ''.join(expanded_disk))
+        print("ID:", curr_id)
+        curr_id -= 1
+
+    checksum = sum(i * int(char) for i, char in enumerate(expanded_disk) if char != '.')
+
+    return checksum
 
 if __name__ == "__main__":
     input_data = read_input('/Users/mattfree/Desktop/AdventOfCode/day09/input.txt')
