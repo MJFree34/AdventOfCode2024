@@ -86,8 +86,35 @@ def solve_part1():
     
     return result
 
-def solve_part2():
-    pass
+def solve_part2(part1_result: int):
+    # Get all x and y wires and sort them by their number
+    x_wires = [wire for wire in input_wires if wire.name.startswith('x')]
+    y_wires = [wire for wire in input_wires if wire.name.startswith('y')]
+    x_wires.sort(key=lambda w: int(w.name[1:]))
+    y_wires.sort(key=lambda w: int(w.name[1:]))
+
+    # Convert wire lists to binary numbers
+    x_num = 0
+    y_num = 0
+    for i, wire in enumerate(x_wires):
+        if wire.value:
+            x_num |= (1 << i)
+    for i, wire in enumerate(y_wires):
+        if wire.value:
+            y_num |= (1 << i)
+
+    # Add the binary numbers
+    sum_result = x_num + y_num
+    
+    # Find mismatched bits
+    xor_result = sum_result ^ part1_result
+    mismatched_bits = []
+    
+    for i in range(max(sum_result, part1_result).bit_length()):
+        if xor_result & (1 << i):
+            mismatched_bits.append(i)
+            
+    return mismatched_bits
 
 if __name__ == "__main__":
     input_data = read_input('/Users/mattfree/Desktop/AdventOfCode/day24/input.txt')
@@ -96,5 +123,5 @@ if __name__ == "__main__":
     result_part1 = solve_part1()
     print("Part 1:", result_part1)
 
-    result_part2 = solve_part2()
+    result_part2 = solve_part2(result_part1)
     print("Part 2:", result_part2)
